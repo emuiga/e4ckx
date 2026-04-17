@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { synthesize, SynthesizeResponse } from '@/lib/api'
 import Navbar from '@/components/Navbar'
@@ -16,7 +16,7 @@ const STEPS = [
   'Finalising output…',
 ]
 
-export default function GeneratePage() {
+function GenerateContent() {
   const router       = useRouter()
   const searchParams = useSearchParams()
   const topic        = searchParams.get('topic')  ?? ''
@@ -46,8 +46,6 @@ export default function GeneratePage() {
 
   return (
     <>
-      <Navbar />
-
       {/* Teal hero strip */}
       <div style={{ background: 'linear-gradient(135deg, #1a3a4a, #00557b)', padding: '24px', borderBottom: '3px solid #5cb1d0' }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
@@ -107,6 +105,21 @@ export default function GeneratePage() {
       </main>
 
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }`}</style>
+    </>
+  )
+}
+
+export default function GeneratePage() {
+  return (
+    <>
+      <Navbar />
+      <Suspense fallback={
+        <main style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f7f8' }}>
+          <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', color: '#9ab0bc' }}>Loading…</p>
+        </main>
+      }>
+        <GenerateContent />
+      </Suspense>
     </>
   )
 }
