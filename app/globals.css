@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+
+:root {
+  --font-main:      'Roboto', system-ui, sans-serif;
+
+  /* E4C exact colors from site */
+  --navy:           #1a3a4a;   /* nav background */
+  --blue-primary:   #00557b;   /* primary text/headings */
+  --blue-light:     #5cb1d0;   /* accent / secondary */
+  --blue-mid:       #3a8fad;   /* mid blue */
+  --blue-bg:        #b8dff0;   /* light blue bg tint */
+  --teal-hero:      #3fa9cc;   /* hero section bg */
+  --white:          #ffffff;
+  --gray-100:       #f5f7f8;
+  --gray-200:       #e8eef1;
+  --gray-400:       #9ab0bc;
+  --gray-600:       #5a7280;
+  --text-dark:      #1a2a34;
+  --text-mid:       #3a5060;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-main);
+  background: var(--gray-100);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── E4C button style — dotted outline ───────────────────── */
+.btn-e4c {
+  display: inline-block;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border: 2px dotted currentColor;
+  background: var(--navy);
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-e4c:hover { background: var(--blue-primary); }
+
+.btn-e4c-outline {
+  background: transparent;
+  color: var(--navy);
+  border: 2px dotted var(--navy);
+}
+.btn-e4c-outline:hover { background: var(--navy); color: white; }
+
+/* ── Citation chips ──────────────────────────────────────── */
+.cite-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-main);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--blue-bg);
+  color: var(--blue-primary);
+  border: 1px solid var(--blue-light);
+  border-radius: 2px;
+  padding: 1px 5px;
+  margin: 0 2px;
+  cursor: pointer;
+  transition: background 0.15s;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  white-space: nowrap;
+}
+.cite-tag:hover { background: var(--blue-light); color: white; }
+
+.cite-tag.e4c {
+  background: #e8f5ee;
+  color: #1a5c3a;
+  border-color: #7dc4a0;
+}
+
+/* ── Flags ───────────────────────────────────────────────── */
+.flag-assumption {
+  background: #fff8e6;
+  border-left: 3px solid #e6a817;
+  padding: 2px 8px;
+  font-size: 0.9em;
+  color: #7a5010;
+  display: inline;
+}
+.flag-uncertain {
+  background: #f0f4f6;
+  border-left: 3px solid var(--gray-400);
+  padding: 2px 8px;
+  color: var(--gray-600);
+  display: inline;
+}
+
+/* ── Source drawer ───────────────────────────────────────── */
+.source-drawer {
+  position: fixed;
+  right: 0; top: 0; bottom: 0;
+  width: 360px;
+  background: white;
+  border-left: 1px solid var(--gray-200);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.10);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.4,0,0.2,1);
+  z-index: 50;
+}
+.source-drawer.open { transform: translateX(0); }
+
+/* ── Review cards ────────────────────────────────────────── */
+.review-card { border: 1.5px solid var(--gray-200); border-radius: 4px; overflow: hidden; transition: border-color 0.2s; }
+.review-card.approved { border-color: #5cb1d0; background: #f0f9fd; }
+.review-card.flagged  { border-color: #e6a817; background: #fffbf0; }
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--blue-bg); border-radius: 3px; }
+
+/* ── Print ───────────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}
