@@ -2,16 +2,20 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { SynthesizeResponse, Source } from '@/lib/api'
+import { renderContent, buildSourceMap } from '@/lib/renderContent'
 import Navbar from '@/components/Navbar'
+import SourceDrawer from '@/components/SourceDrawer'
 
 type Status = 'pending' | 'approved' | 'flagged'
 const R = { fontFamily: 'Roboto, system-ui, sans-serif' }
 
 export default function ReviewPage() {
   const router = useRouter()
-  const [data,     setData]     = useState<SynthesizeResponse | null>(null)
-  const [statuses, setStatuses] = useState<Record<string, Status>>({})
-  const [notes,    setNotes]    = useState<Record<string, string>>({})
+  const [data,        setData]        = useState<SynthesizeResponse | null>(null)
+  const [statuses,    setStatuses]    = useState<Record<string, Status>>({})
+  const [notes,       setNotes]       = useState<Record<string, string>>({})
+  const [activeSource, setActiveSource] = useState<Source | null>(null)
+  const [drawerOpen,   setDrawerOpen]   = useState(false)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('brief_result')
@@ -44,11 +48,26 @@ export default function ReviewPage() {
 
   const { brief, flag_for_review, sources } = data
   const srcMap = Object.fromEntries(sources.map((s: Source) => [s.id, s]))
+
+  function handleCiteClick(id: string) {
+    const src = id === 'E4C'
+      ? { id: 'E4C', title: 'Engineering For Change Knowledge Base', excerpt: 'Retrieved via KnowledgeXpert', url: 'https://www.engineeringforchange.org', source_type: 'e4c' }
+      : srcMap[id] ?? null
+    setActiveSource(src)
+    setDrawerOpen(true)
+  }
+
+  const renderOpts = {
+    sources:       srcMap,
+    onCiteClick:   handleCiteClick,
+    highlightedId: null,
+  }
   const pendingCount = Object.values(statuses).filter(v => v === 'pending').length
 
   return (
     <>
       <Navbar />
+      <SourceDrawer source={activeSource} isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
       {/* Page header */}
       <div style={{ background: 'linear-gradient(135deg, #1a3a4a, #00557b)', padding: '28px 24px', borderBottom: '3px solid #e6a817' }}>
@@ -119,7 +138,9 @@ export default function ReviewPage() {
                 </div>
               </div>
               <div style={{ padding: '16px 18px' }}>
-                <p style={{ ...R, fontSize: '14px', color: '#3a5060', lineHeight: 1.7 }}>{section.content}</p>
+                <p style={{ ...R, fontSize: '14px', color: '#3a5060', lineHeight: 1.7 }}>
+                  {renderContent(section.content, renderOpts)}
+                </p>
                 {status === 'flagged' && (
                   <textarea value={notes[section.heading] ?? ''} onChange={e => setNotes(p => ({ ...p, [section.heading]: e.target.value }))}
                     placeholder="Note what needs verification…"
